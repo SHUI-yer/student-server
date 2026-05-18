@@ -1,41 +1,68 @@
-# 学生信息管理系统 (Student Information Management System)
+# ☕ 学生信息管理系统 - 后端服务 (student-server)
 
-本项目为前后端分离的全栈系统研发成果，专为本次全栈开发能力考核量身定制。系统包含了对学生信息、课程信息的核心管理，以及复杂的学生成绩交叉查询功能。
-
----
-
-## 🚀 项目当前开发进展 (Current Status)
-
-目前项目正严格按照敏捷开发计划高速推进，**第一天（Day 1）研发任务已全部超额完成**。项目大厦的“地下地基”与“核心安全大门”已经成功打通。
-
-### 📊 整体进度看盘
-- **总体开发进度**：`[▓░░░░░░░░░░░░░░░░░░░] 5%`
-- **后端接口进度**：`[▓▓░░░░░░░░░░░░░░░░░░] 10%`
-- **前端页面进度**：`[░░░░░░░░░░░░░░░░░░░░] 0%`
-
-### 🛠️ 已完成里程碑 (Milestones Achieved)
-1. **【数据库地基】**：在 DataGrip 中完美搭建了 `student_systerm` 库，包含 `user`、`student`、`course`、`score` 四张表，建立了严密的外键级联约束，并成功导入首批用于复杂联查的测试数据。
-2. **【后端工程化与通电】**：在 IntelliJ IDEA 中一键初始化 Spring Boot 项目，通过 `application.properties` 联通 MySQL 驱动，项目初次跑通，未发生任何连接报错。
-3. **【登录认证核心打通】**：引入 `java-jwt` 工具依赖。独立编写 `LoginController` 实现 `POST /api/login` 接口。对匹配的账号（`admin/123456`）能够精确颁发带有时效性的安全加密 Token。
-4. **【企业级联调闭环】**：集成 IDEA 的 **Apifox Helper** 插件，实现代码与接口文档自动映射。在 Apifox 客户端中发送测试报文，成功获取 `200 状态码` 及一串巨长的加密 `token` 字符串。
+本项目是学生信息管理系统的后端核心，基于 Java 25 和 Spring Boot 4.0.6 架构设计，采用 JWT 机制进行身份加密与认证。
 
 ---
 
-## 📝 阶段性踩坑与复盘笔记 (Bug Logging)
+## 🛠️ 一、 本地开发环境依赖
 
-### 📌 坑位 1：文件名与公共类名不匹配导致的编译红线
-- **现象**：新建控制器时，代码内整行 `public class LoginController` 被 IDEA 标红提示编译失败。
+在运行本项目前，请确保您的本地电脑已配置以下环境：
 
-- **原因**：手滑将文件名拼写成了 `LoginContorller.java`（`or` 顺序反了），而类名是 `LoginController`。Java 规定公共类名必须与文件名百分之百严格契合。
+* **Java SDK**: `Azul Zulu 25.0.3` 或更高版本 (兼容 JDK 25+)
+* **构建工具**: `Maven 3.9+`
+* **数据库**: `MySQL 8.0` 或更高版本
+* **推荐 IDE**: `IntelliJ IDEA Ultimate / Community Edition`
 
-- **解决**：在左侧目录树使用一键重构快捷键 `Shift + F6` (Rename) 纠正文件名后，红线消失。
+---
 
-  ### 📊 整体进度看盘（5月18日更新）
-  - **总体开发进度**：`[▓▓░░░░░░░░░░░░░░░░░░] 10%`
-  - **后端接口进度**：`[▓▓░░░░░░░░░░░░░░░░░░] 10%`
-  - **前端页面进度**：`[▓▓▓░░░░░░░░░░░░░░░░░] 15%` (登录页、Axios 拦截器、TS 严苛环境配置全盘跑通！)
+## 🚀 二、 克隆后的快速配置与运行
 
-  ### 📌 坑位 2：TS1484 严格类型导入报错与单文件组件（.vue）类型抓瞎
-  - **现象**：在 `request.ts` 里引入 Axios 响应配置报错 TS1484；在 `main.ts` 里引入 `App.vue` 抛出 TS7016 隐式 any 警告。
-  - **原因**：前端脚手架开启了 `verbatimModuleSyntax` 严格纯类型检测，且 TS 默认无法识别 `.vue` 这种非标后缀文件。
-  - **解决**：在导入类型时前置 `import type` 关键字；在 `src` 下紧急配置 `env.d.ts` 声明文件充当翻译官，红线全部熄灭。
+### 步骤 1：初始化数据库
+
+1. 打开您的 MySQL 数据库管理工具（如 DataGrip / Navicat）。
+2. 新建一个数据库，命名为：**`student_systerm`**（字符集推荐：`utf8mb4`）。
+3. 执行本项目根目录下 `sql/` 目录中的建表脚本（或导入对应的 DDL 语句），确保 `user`、`student` 等初始核心表及测试数据生成完毕。
+
+### 步骤 2：修改数据库本地连接配置
+
+由于敏感信息隔离，代码中的数据库密码已作占位处理。
+
+1. 打开 `src/main/resources/application.properties` 文件。
+
+2. 找到以下配置，将密码修改为您**本地真实的 MySQL 密码**：
+
+   ```properties
+   spring.datasource.username=root
+   spring.datasource.password=填写您本地的数据库密码
+   ```
+
+###                       步骤 3：启动服务
+
+- **方法 A（IDE 一键启动）**：用 IntelliJ IDEA 打开本工程，等待 Maven 依赖下载完毕后，找到主启动类 `StudentServerApplication.java`，点击 **绿色三角按钮 (Run)** 启动。
+- **方法 B（命令行启动）**：在工程根目录下打开终端，执行以下命令：
+
+Bash
+
+```
+mvn clean spring-boot:run
+```
+
+当控制台打印出如下标志，证明后端服务在 **`8080`** 端口通电成功：
+
+Plaintext
+
+```
+Tomcat started on port 8080 (http) with context path '/'
+Started StudentServerApplication in ...
+```
+
+------
+
+## 🔒 三、 初始内置测试账号
+
+本系统已对跨域请求（CORS）进行了全局/控制层放行，允许前端端口进行安全联调：
+
+- **管理员账号**：`admin`
+- **初始密码**：`123456`
+
+*(注：登录成功后，后端将颁发标准的签名 Token，前端需在请求拦截器中携带 `Authorization: Bearer <Token>` 即可正常通行。)*
