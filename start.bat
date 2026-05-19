@@ -10,7 +10,7 @@ echo ====================================================
 echo ⚙️ 1. 正在后台启动 Java 后端 (Spring Boot)...
 cd /d D:\SchoolProject\student-server
 :: 使用 mvn 重新编译并运行，这样你不用开 IDEA 也能跑后端
-start "Java Backend (Port 8080)" cmd /k "mvn clean spring-boot:run"
+start "Java Backend (Port 8080)" cmd /k "mvnw clean spring-boot:run"
 
 echo 🎨 2. 正在后台启动 Vue3 前端 (Vite)...
 cd /d D:\SchoolProject\student_client
