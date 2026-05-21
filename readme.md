@@ -66,3 +66,35 @@ Started StudentServerApplication in ...
 - **初始密码**：`123456`
 
 *(注：登录成功后，后端将颁发标准的签名 Token，前端需在请求拦截器中携带 `Authorization: Bearer <Token>` 即可正常通行。)*
+
+---
+
+## 📁 四、 核心架构说明 (Core Architecture)
+
+本项目遵循标准的 Spring Boot 分层架构，确保代码的高内聚低耦合：
+
+- **`controller`**: 负责处理 HTTP 请求及响应封装。
+    - `LoginController`: 登录与 Token 颁发。
+    - `StudentController`: 学生管理业务接口。
+- **`service`**: 核心业务逻辑层。
+- **`mapper`**: 数据持久层（MyBatis），负责 SQL 执行。
+- **`entity`**: 数据库表对应的 Java POJO。
+- **`interceptor`**: JWT 安全拦截器。
+
+---
+
+## 📊 五、 已打通的 API 概览 (企业级规范)
+
+### 1. 认证模块
+- `POST /api/login`: 登录认证，返回 `Result<Map<String, String>>`。
+
+### 2. 学生管理模块
+- `GET /api/student/page`: 分页查询学生，返回 `Result<PageResult<Student>>`。
+- `POST /api/student/save`: 保存/更新学生信息，返回 `Result<Void>`。
+- `DELETE /api/student/{id}`: 删除学生，返回 `Result<Void>`。
+
+---
+
+## 💎 六、 项目重构亮点
+- **统一响应**: 引入 `com.suiye.studentserver.common.Result`。
+- **全局异常处理**: 引入 `com.suiye.studentserver.exception.GlobalExceptionHandler`。
