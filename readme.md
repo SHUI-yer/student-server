@@ -93,6 +93,11 @@ Started StudentServerApplication in ...
 - `POST /api/student/save`: 保存/更新学生信息，返回 `Result<Void>`。
 - `DELETE /api/student/{id}`: 删除学生，返回 `Result<Void>`。
 
+### 3. 课程管理模块 (Day 11-12 完成)
+- `GET /api/course/page`: 分页查询课程，返回 `Result<PageResult<Course>>`。
+- `POST /api/course/save`: 保存/更新课程信息，返回 `Result<Void>`。
+- `DELETE /api/course/{id}`: 删除课程，返回 `Result<Void>`。
+
 ---
 
 ## 💎 六、 项目重构亮点
