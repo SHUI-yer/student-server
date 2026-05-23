@@ -35,4 +35,9 @@ public class StudentController {
         studentService.deleteStudent(id);
         return Result.success();
     }
+
+    @GetMapping("/all")
+    public Result<java.util.List<Student>> getAll() {
+        return Result.success(studentService.getAllStudents());
+    }
 }

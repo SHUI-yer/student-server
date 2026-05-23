@@ -23,7 +23,6 @@ public class StudentServiceImpl implements StudentService {
         int total;
 
         if (keyword != null && !keyword.isEmpty()) {
-            // 注意：这里为了简化，搜索时不带分页，或者可以根据需求实现搜索分页
             list = studentMapper.search(keyword);
             total = list.size();
         } else {
@@ -49,6 +48,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public int deleteStudent(Integer id) {
         return studentMapper.delete(id);
+    }
+
+    @Override
+    public List<Student> getAllStudents() {
+        return studentMapper.findAll();
     }
 
     @Override

@@ -8,5 +8,6 @@ public interface StudentService {
     Map<String, Object> getStudentPage(int pageNum, int pageSize, String keyword);
     int saveStudent(Student student);
     int deleteStudent(Integer id);
+    List<Student> getAllStudents();
     Student getStudentById(Integer id);
 }

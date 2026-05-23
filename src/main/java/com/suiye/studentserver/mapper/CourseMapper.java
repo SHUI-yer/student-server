@@ -11,6 +11,9 @@ public interface CourseMapper {
     @Select("SELECT * FROM course WHERE name LIKE CONCAT('%', #{keyword}, '%') OR course_number LIKE CONCAT('%', #{keyword}, '%')")
     List<Course> search(String keyword);
 
+    @Select("SELECT * FROM course")
+    List<Course> findAll();
+
     @Select("SELECT * FROM course LIMIT #{offset}, #{limit}")
     List<Course> findByPage(@Param("offset") int offset, @Param("limit") int limit);
 

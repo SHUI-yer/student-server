@@ -49,4 +49,9 @@ public class CourseServiceImpl implements CourseService {
     public int deleteCourse(Integer id) {
         return courseMapper.delete(id);
     }
+
+    @Override
+    public List<Course> getAllCourses() {
+        return courseMapper.findAll();
+    }
 }

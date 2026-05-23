@@ -35,4 +35,9 @@ public class CourseController {
         courseService.deleteCourse(id);
         return Result.success();
     }
+
+    @GetMapping("/all")
+    public Result<java.util.List<Course>> getAllCourses() {
+        return Result.success(courseService.getAllCourses());
+    }
 }
