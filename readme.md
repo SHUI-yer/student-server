@@ -15,13 +15,13 @@
 
 ---
 
-## 🚀 二、 克隆后的快速配置与运行
+## 🚀 快速启动指南
 
 ### 步骤 1：初始化数据库
 
 1. 打开您的 MySQL 数据库管理工具（如 DataGrip / Navicat）。
 2. 新建一个数据库，命名为：**`student_systerm`**（字符集推荐：`utf8mb4`）。
-3. 执行本项目根目录下 `sql/` 目录中的建表脚本（或导入对应的 DDL 语句），确保 `user`、`student` 等初始核心表及测试数据生成完毕。
+3. 执行本项目根目录下的 **`init_database.sql`**，确保 `student`、`course` 和 `score` 等核心表及关联外键生成完毕。
 
 ### 步骤 2：修改数据库本地连接配置
 
@@ -99,6 +99,18 @@ Started StudentServerApplication in ...
 - `DELETE /api/course/{id}`: 删除课程，返回 `Result<Void>`。
 
 ---
+
+### 2. 本地数据库配置
+由于安全原因，项目的真实数据库配置已被 `.gitignore` 隐藏。**Copy 本项目的使用者需要自行配置**：
+在 `src/main/resources/` 目录下创建 `application-local.properties`，并填入以下内容：
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/student_systerm?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8
+spring.datasource.username=root
+spring.datasource.password=【填写您的本地MySQL密码】
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+server.port=8080
+mybatis.configuration.map-underscore-to-camel-case=true
+```
 
 ## 💎 六、 项目重构亮点
 - **统一响应**: 引入 `com.suiye.studentserver.common.Result`。

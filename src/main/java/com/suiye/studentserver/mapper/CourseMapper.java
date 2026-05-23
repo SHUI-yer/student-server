@@ -14,7 +14,7 @@ public interface CourseMapper {
     @Select("SELECT * FROM course")
     List<Course> findAll();
 
-    @Select("SELECT * FROM course LIMIT #{offset}, #{limit}")
+    @Select("SELECT * FROM course ORDER BY id DESC LIMIT #{offset}, #{limit}")
     List<Course> findByPage(@Param("offset") int offset, @Param("limit") int limit);
 
     @Select("SELECT COUNT(*) FROM course")

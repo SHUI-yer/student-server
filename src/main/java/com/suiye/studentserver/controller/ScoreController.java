@@ -10,6 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/score")
+@CrossOrigin
 public class ScoreController {
 
     @Autowired

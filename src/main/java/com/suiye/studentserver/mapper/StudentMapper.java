@@ -14,7 +14,7 @@ public interface StudentMapper {
     @Select("SELECT * FROM student")
     List<Student> findAll();
 
-    @Select("SELECT * FROM student LIMIT #{offset}, #{limit}")
+    @Select("SELECT * FROM student ORDER BY id DESC LIMIT #{offset}, #{limit}")
     List<Student> findByPage(@Param("offset") int offset, @Param("limit") int limit);
 
     @Select("SELECT COUNT(*) FROM student")
