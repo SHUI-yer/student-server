@@ -1,117 +1,431 @@
-# ☕ 学生信息管理系统 - 后端服务 (student-server)
+# ☕ 学生信息管理系统 - 后端服务（student-server）
 
-本项目是学生信息管理系统的后端核心，基于 Java 25 和 Spring Boot 4.0.6 架构设计，采用 JWT 机制进行身份加密与认证。
-
----
-
-## 🛠️ 一、 本地开发环境依赖
-
-在运行本项目前，请确保您的本地电脑已配置以下环境：
-
-* **Java SDK**: `Azul Zulu 25.0.3` 或更高版本 (兼容 JDK 25+)
-* **构建工具**: `Maven 3.9+`
-* **数据库**: `MySQL 8.0` 或更高版本
-* **推荐 IDE**: `IntelliJ IDEA Ultimate / Community Edition`
+> 一个基于 **Java 25 + Spring Boot 4.0.6 + MyBatis + JWT** 的企业级学生信息管理系统后端服务。
+> 项目采用前后端分离架构，提供统一 RESTful API，并基于 JWT 实现身份认证与安全拦截。
 
 ---
 
-## 🚀 快速启动指南
+# 🛠️ 一、本地开发环境依赖
 
-### 步骤 1：初始化数据库
+在运行本项目前，请确保本地环境已正确安装以下工具：
 
-1. 打开您的 MySQL 数据库管理工具（如 DataGrip / Navicat）。
-2. 新建一个数据库，命名为：**`student_systerm`**（字符集推荐：`utf8mb4`）。
-3. 执行本项目根目录下的 **`init_database.sql`**，确保 `student`、`course` 和 `score` 等核心表及关联外键生成完毕。
+| 环境       | 推荐版本                               |
+| -------- | ---------------------------------- |
+| Java SDK | Azul Zulu `25.0.3+`                |
+| Maven    | `3.9+`                             |
+| MySQL    | `8.0+`                             |
+| IDE      | IntelliJ IDEA Ultimate / Community |
 
-### 步骤 2：修改数据库本地连接配置
+---
 
-由于敏感信息隔离，代码中的数据库密码已作占位处理。
+# 🚀 二、快速启动指南
 
-1. 打开 `src/main/resources/application.properties` 文件。
+---
 
-2. 找到以下配置，将密码修改为您**本地真实的 MySQL 密码**：
+## 📌 步骤 1：初始化数据库
 
-   ```properties
-   spring.datasource.username=root
-   spring.datasource.password=填写您本地的数据库密码
-   ```
+### 1. 创建数据库
 
-###                       步骤 3：启动服务
+打开 MySQL 管理工具（DataGrip / Navicat / MySQL Workbench），创建数据库：
 
-- **方法 A（IDE 一键启动）**：用 IntelliJ IDEA 打开本工程，等待 Maven 依赖下载完毕后，找到主启动类 `StudentServerApplication.java`，点击 **绿色三角按钮 (Run)** 启动。
-- **方法 B（命令行启动）**：在工程根目录下打开终端，执行以下命令：
-
-Bash
-
-```
-mvn clean spring-boot:run
+```sql
+CREATE DATABASE student_systerm
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 ```
 
-当控制台打印出如下标志，证明后端服务在 **`8080`** 端口通电成功：
+---
 
-Plaintext
+### 2. 导入初始化 SQL
 
+执行项目根目录下的：
+
+```text
+init_database.sql
 ```
-Tomcat started on port 8080 (http) with context path '/'
-Started StudentServerApplication in ...
+
+初始化完成后，应生成以下核心业务表：
+
+* `student`
+* `course`
+* `score`
+* `user`
+
+以及对应的外键关联与级联约束。
+
+---
+
+# ⚙️ 三、本地数据库配置
+
+由于安全原因，真实数据库密码未上传至 GitHub。
+
+请自行创建本地配置文件：
+
+```text
+src/main/resources/application-local.properties
 ```
 
-------
+并填写如下内容：
 
-## 🔒 三、 初始内置测试账号
-
-本系统已对跨域请求（CORS）进行了全局/控制层放行，允许前端端口进行安全联调：
-
-- **管理员账号**：`admin`
-- **初始密码**：`123456`
-
-*(注：登录成功后，后端将颁发标准的签名 Token，前端需在请求拦截器中携带 `Authorization: Bearer <Token>` 即可正常通行。)*
-
----
-
-## 📁 四、 核心架构说明 (Core Architecture)
-
-本项目遵循标准的 Spring Boot 分层架构，确保代码的高内聚低耦合：
-
-- **`controller`**: 负责处理 HTTP 请求及响应封装。
-    - `LoginController`: 登录与 Token 颁发。
-    - `StudentController`: 学生管理业务接口。
-- **`service`**: 核心业务逻辑层。
-- **`mapper`**: 数据持久层（MyBatis），负责 SQL 执行。
-- **`entity`**: 数据库表对应的 Java POJO。
-- **`interceptor`**: JWT 安全拦截器。
-
----
-
-## 📊 五、 已打通的 API 概览 (企业级规范)
-
-### 1. 认证模块
-- `POST /api/login`: 登录认证，返回 `Result<Map<String, String>>`。
-
-### 2. 学生管理模块
-- `GET /api/student/page`: 分页查询学生，返回 `Result<PageResult<Student>>`。
-- `POST /api/student/save`: 保存/更新学生信息，返回 `Result<Void>`。
-- `DELETE /api/student/{id}`: 删除学生，返回 `Result<Void>`。
-
-### 3. 课程管理模块 (Day 11-12 完成)
-- `GET /api/course/page`: 分页查询课程，返回 `Result<PageResult<Course>>`。
-- `POST /api/course/save`: 保存/更新课程信息，返回 `Result<Void>`。
-- `DELETE /api/course/{id}`: 删除课程，返回 `Result<Void>`。
-
----
-
-### 2. 本地数据库配置
-由于安全原因，项目的真实数据库配置已被 `.gitignore` 隐藏。**Copy 本项目的使用者需要自行配置**：
-在 `src/main/resources/` 目录下创建 `application-local.properties`，并填入以下内容：
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/student_systerm?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8
+
 spring.datasource.username=root
-spring.datasource.password=【填写您的本地MySQL密码】
+spring.datasource.password=填写您本地的MySQL密码
+
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
 server.port=8080
+
 mybatis.configuration.map-underscore-to-camel-case=true
 ```
 
-## 💎 六、 项目重构亮点
-- **统一响应**: 引入 `com.suiye.studentserver.common.Result`。
-- **全局异常处理**: 引入 `com.suiye.studentserver.exception.GlobalExceptionHandler`。
+---
+
+# ▶️ 四、启动项目
+
+---
+
+## 方法 A：IDEA 一键启动（推荐）
+
+1. 使用 IntelliJ IDEA 打开项目
+2. 等待 Maven 自动下载依赖
+3. 找到启动类：
+
+```text
+StudentServerApplication.java
+```
+
+4. 点击绿色运行按钮 ▶️
+
+---
+
+## 方法 B：命令行启动
+
+在项目根目录执行：
+
+```bash
+mvn clean spring-boot:run
+```
+
+如果项目使用了 Maven Wrapper（推荐）：
+
+Linux / macOS：
+
+```bash
+./mvnw spring-boot:run
+```
+
+Windows：
+
+```bash
+mvnw.cmd spring-boot:run
+```
+
+---
+
+## ✅ 启动成功标志
+
+控制台输出如下内容即代表启动成功：
+
+```text
+Tomcat started on port 8080 (http)
+Started StudentServerApplication
+```
+
+后端服务默认运行于：
+
+```text
+http://localhost:8080
+```
+
+---
+
+# 🔒 五、初始测试账号
+
+系统已默认放行前端跨域请求（CORS），可直接进行联调测试。
+
+| 类型    | 内容       |
+| ----- | -------- |
+| 管理员账号 | `admin`  |
+| 初始密码  | `123456` |
+
+---
+
+## 📌 登录成功后
+
+后端会返回 JWT Token：
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "token": "xxxxxxxx"
+  }
+}
+```
+
+前端需在请求头中携带：
+
+```http
+Authorization: Bearer <Token>
+```
+
+---
+
+# 🧩 六、项目核心架构（Core Architecture）
+
+项目遵循标准 Spring Boot 分层架构，实现高内聚、低耦合设计。
+
+```text
+src/main/java/com/suiye/studentserver/
+├── controller/     # 控制层（接口入口）
+├── service/        # 业务逻辑层
+├── mapper/         # MyBatis 持久层
+├── entity/         # 实体类
+├── interceptor/    # JWT 安全拦截器
+├── common/         # 通用响应封装
+├── exception/      # 全局异常处理
+└── config/         # Spring MVC 配置
+```
+
+---
+
+## 📌 核心模块说明
+
+### `controller`
+
+负责接收 HTTP 请求并返回统一响应。
+
+主要包含：
+
+* `LoginController`
+* `StudentController`
+* `CourseController`
+* `ScoreController`
+
+---
+
+### `service`
+
+封装核心业务逻辑：
+
+* 分页处理
+* 数据校验
+* 条件查询
+* 数据转换
+
+---
+
+### `mapper`
+
+基于 MyBatis 实现 SQL 持久化操作。
+
+---
+
+### `interceptor`
+
+JWT 登录鉴权核心保安。
+
+功能包括：
+
+* Token 验签
+* Token 过期校验
+* 非法请求拦截
+* 返回 `401 Unauthorized`
+
+---
+
+# 📊 七、已完成 API 概览
+
+---
+
+## 🔐 1. 登录认证模块
+
+| 请求方式 | 接口           |
+| ---- | ------------ |
+| POST | `/api/login` |
+
+### 返回类型
+
+```java
+Result<Map<String, String>>
+```
+
+---
+
+## 👨‍🎓 2. 学生管理模块
+
+| 请求方式   | 接口                  | 说明      |
+| ------ | ------------------- | ------- |
+| GET    | `/api/student/page` | 分页查询    |
+| POST   | `/api/student/save` | 新增 / 修改 |
+| DELETE | `/api/student/{id}` | 删除学生    |
+
+---
+
+## 📚 3. 课程管理模块
+
+| 请求方式   | 接口                 | 说明      |
+| ------ | ------------------ | ------- |
+| GET    | `/api/course/page` | 分页查询    |
+| POST   | `/api/course/save` | 新增 / 修改 |
+| DELETE | `/api/course/{id}` | 删除课程    |
+
+---
+
+## 📈 4. 成绩查询模块
+
+| 请求方式 | 接口                | 说明      |
+| ---- | ----------------- | ------- |
+| GET  | `/api/score/list` | 多条件成绩查询 |
+
+支持：
+
+* 学生 ID 查询
+* 课程 ID 查询
+* 三表 JOIN 联查
+
+---
+
+# 🛡️ 八、安全机制说明
+
+项目采用“双重安全防线”。
+
+---
+
+## 前端防线
+
+### Vue Router 路由守卫
+
+```ts
+router.beforeEach()
+```
+
+未登录用户禁止访问后台页面。
+
+---
+
+## 后端防线
+
+### JWT 拦截器
+
+```text
+JwtInterceptor
+```
+
+负责：
+
+* 校验 Token
+* 验证签名
+* 检查过期时间
+* 拦截非法请求
+
+---
+
+# 💎 九、项目重构亮点
+
+---
+
+## ✅ 统一响应结构
+
+统一返回：
+
+```java
+Result<T>
+```
+
+避免前后端字段混乱。
+
+---
+
+## ✅ 全局异常处理
+
+统一异常捕获：
+
+```text
+GlobalExceptionHandler
+```
+
+实现：
+
+* 参数异常处理
+* Token 异常处理
+* 系统异常兜底
+
+---
+
+## ✅ 前后端完全分离
+
+技术栈独立运行：
+
+| 模块             | 端口     |
+| -------------- | ------ |
+| 前端 Vue         | `5173` |
+| 后端 Spring Boot | `8080` |
+
+---
+
+## ✅ 企业级 JWT 鉴权
+
+实现：
+
+* 登录颁发 Token
+* 请求自动携带 Token
+* 后端统一验签
+* Token 失效自动踢回登录页
+
+---
+
+# 📦 十、项目运行建议
+
+推荐配套运行：
+
+| 模块 | 项目               |
+| -- | ---------------- |
+| 前端 | `student_client` |
+| 后端 | `student-server` |
+
+建议同时启动：
+
+```text
+5173 (Vue Frontend)
+8080 (Spring Boot Backend)
+```
+
+---
+
+# 📝 十一、开发建议
+
+推荐后续扩展方向：
+
+* 文件上传（头像）
+* RBAC 权限管理
+* Redis Token 缓存
+* Swagger/OpenAPI 文档
+* Docker 容器部署
+* Nginx 反向代理
+* Linux 云服务器部署
+
+---
+
+# 🎯 当前项目完成度
+
+| 模块      | 状态 |
+| ------- | -- |
+| 登录认证    | ✅  |
+| JWT 鉴权  | ✅  |
+| 学生管理    | ✅  |
+| 课程管理    | ✅  |
+| 成绩查询    | ✅  |
+| 前后端联调   | ✅  |
+| 企业级后台框架 | ✅  |
+
+---
+
+# 🚀 项目当前阶段
+
+```text
+功能完善 + 用户体验优化 + 项目答辩冲刺阶段
+```
