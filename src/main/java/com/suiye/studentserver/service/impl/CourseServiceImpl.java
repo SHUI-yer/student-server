@@ -54,4 +54,11 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> getAllCourses() {
         return courseMapper.findAll();
     }
+
+    @Override
+    public void batchSave(List<Course> courses) {
+        for (Course course : courses) {
+            courseMapper.insert(course);
+        }
+    }
 }

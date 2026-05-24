@@ -34,4 +34,7 @@ public interface CourseMapper {
 
     @Select("SELECT * FROM course WHERE id=#{id}")
     Course findById(Integer id);
+
+    @Select("SELECT * FROM course WHERE course_number=#{courseNumber} LIMIT 1")
+    Course findByCourseNumber(String courseNumber);
 }

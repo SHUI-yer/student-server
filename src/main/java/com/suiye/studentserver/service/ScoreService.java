@@ -8,4 +8,6 @@ public interface ScoreService {
     Map<String, Object> getScorePage(int pageNum, int pageSize, String keyword);
     int saveScore(Score score);
     int deleteScore(Integer id);
+    java.util.List<com.suiye.studentserver.entity.ScoreVO> getAllScores();
+    void batchImport(java.util.List<com.suiye.studentserver.entity.ScoreImportDTO> scores);
 }

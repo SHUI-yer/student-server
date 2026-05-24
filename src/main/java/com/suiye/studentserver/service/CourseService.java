@@ -8,4 +8,5 @@ public interface CourseService {
     int saveCourse(Course course);
     int deleteCourse(Integer id);
     java.util.List<Course> getAllCourses();
+    void batchSave(java.util.List<Course> courses);
 }

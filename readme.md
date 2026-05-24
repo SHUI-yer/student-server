@@ -1,9 +1,50 @@
 # ☕ 学生信息管理系统 - 后端服务（student-server）
 
-> 一个基于 **Java 25 + Spring Boot 4.0.6 + MyBatis + JWT** 的企业级学生信息管理系统后端服务。
-> 项目采用前后端分离架构，提供统一 RESTful API，并基于 JWT 实现身份认证与安全拦截。
+> 一个基于 **Java 17 + Spring Boot 4.0.6 + MyBatis + JWT + EasyExcel** 的企业级全栈后端服务。
+> 项目深度集成了数据统计分析、文件持久化存储、以及高性能 Excel 批量处理能力。
 
 ---
+
+# 🚀 核心技术特性 (Features)
+
+- **数字化分析引擎**: 集成 StatController，通过 Java Stream 流与**标准差 (Standard Deviation)** 算法产出多维成绩分析矩阵与课程难度评估模型。
+- **EasyExcel 全能互操作**: 实现了学生档案、课程信息、成绩报表的**全模块批量导入与导出**，支持智能关联（通过学号/课程号自动匹配 ID）。
+- **学分制自动换算引擎**: 服务端强制校验 originalScore（百分制），并自动根据课程 credit 折算最终得分，确保教务数据逻辑严谨。
+- **全栈文件存储**: 支持 MultipartFile 异步上传，配合 UUID 重命名策略与静态资源映射，实现头像持久化回显。
+- **三位一体安全体系**: 基于 JWT 的请求拦截、全局响应 Result 封装、以及 RESTful 异常统一处理。
+
+---
+
+# 📂 核心目录结构
+```text
+student-server/
+├── src/main/java/com/suiye/studentserver/
+│   ├── common/             # 统一响应(Result)与常量
+│   ├── config/             # JWT/跨域/资源映射配置
+│   ├── controller/         # RESTful 接口(含Excel/统计接口)
+│   ├── entity/             # 实体类(含Excel导入导出DTO)
+│   ├── exception/          # 全局异常捕获处理
+│   ├── interceptor/        # JWT 安全拦截器
+│   ├── mapper/             # MyBatis 数据库映射
+│   └── service/            # 核心业务逻辑(含成绩换算算法)
+├── src/main/resources/
+│   ├── application.properties
+│   └── application-local.properties # 本地机密配置(Git忽略)
+├── init_database.sql       # 🏦 标准化数据库初始化脚本
+└── uploads/                # 📁 头像文件持久化存储目录
+```
+
+---
+
+# 📊 接口进展看板 (API Status)
+- [x] **认证接口**: 登录、Token 签发与验签
+- [x] **学生接口**: 分页查询、CRUD、批量导入导出
+- [x] **课程接口**: 分页查询、CRUD、批量导入导出
+- [x] **成绩接口**: 分页查询、成绩自动折算保存、批量导入导出
+- [x] **统计接口**: 大屏聚合数据、历年趋势、难度雷达矩阵分析
+- [x] **文件接口**: 头像上传、UUID 持久化、静态资源放行映射
+
+
 
 # 🛠️ 一、本地开发环境依赖
 

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   `age` int(11) DEFAULT NULL COMMENT '年龄',
   `major` varchar(100) NOT NULL COMMENT '专业',
   `class_name` varchar(50) DEFAULT NULL COMMENT '班级',
+  `avatar_url` varchar(255) DEFAULT NULL COMMENT '头像地址',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_student_number` (`student_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='学生信息表';
@@ -28,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `score` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '成绩ID',
   `student_id` int(11) NOT NULL COMMENT '学生ID',
   `course_id` int(11) NOT NULL COMMENT '课程ID',
-  `score` double NOT NULL COMMENT '成绩',
+  `score` double NOT NULL COMMENT '学分成绩',
+  `original_score` double DEFAULT NULL COMMENT '百分制成绩',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_student_course` (`student_id`,`course_id`),
   KEY `idx_student_id` (`student_id`),

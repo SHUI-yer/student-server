@@ -20,13 +20,13 @@ public interface StudentMapper {
     @Select("SELECT COUNT(*) FROM student")
     int count();
 
-    @Insert("INSERT INTO student(name, student_number, gender, age, major, class_name) " +
-            "VALUES(#{name}, #{studentNumber}, #{gender}, #{age}, #{major}, #{className})")
+    @Insert("INSERT INTO student(name, student_number, gender, age, major, class_name, avatar_url) " +
+            "VALUES(#{name}, #{studentNumber}, #{gender}, #{age}, #{major}, #{className}, #{avatarUrl})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Student student);
 
     @Update("UPDATE student SET name=#{name}, student_number=#{studentNumber}, gender=#{gender}, " +
-            "age=#{age}, major=#{major}, class_name=#{className} WHERE id=#{id}")
+            "age=#{age}, major=#{major}, class_name=#{className}, avatar_url=#{avatarUrl} WHERE id=#{id}")
     int update(Student student);
 
     @Delete("DELETE FROM student WHERE id=#{id}")
@@ -34,4 +34,7 @@ public interface StudentMapper {
 
     @Select("SELECT * FROM student WHERE id=#{id}")
     Student findById(Integer id);
+
+    @Select("SELECT * FROM student WHERE student_number=#{studentNumber} LIMIT 1")
+    Student findByStudentNumber(String studentNumber);
 }

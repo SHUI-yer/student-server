@@ -10,4 +10,5 @@ public interface StudentService {
     int deleteStudent(Integer id);
     List<Student> getAllStudents();
     Student getStudentById(Integer id);
+    void batchSave(List<Student> students);
 }

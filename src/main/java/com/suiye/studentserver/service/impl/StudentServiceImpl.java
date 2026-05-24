@@ -59,4 +59,11 @@ public class StudentServiceImpl implements StudentService {
     public Student getStudentById(Integer id) {
         return studentMapper.findById(id);
     }
+
+    @Override
+    public void batchSave(List<Student> students) {
+        for (Student student : students) {
+            studentMapper.insert(student);
+        }
+    }
 }
