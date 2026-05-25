@@ -56,6 +56,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<Student> getFilteredStudents(String major, String className) {
+        List<Student> all = studentMapper.findAll();
+        return all.stream()
+                .filter(s -> (major == null || major.isEmpty() || major.equals(s.getMajor())))
+                .filter(s -> (className == null || className.isEmpty() || className.equals(s.getClassName())))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
     public Student getStudentById(Integer id) {
         return studentMapper.findById(id);
     }

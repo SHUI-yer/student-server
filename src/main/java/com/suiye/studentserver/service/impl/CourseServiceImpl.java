@@ -56,6 +56,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> getFilteredCourses(String semester, String teacher) {
+        List<Course> all = courseMapper.findAll();
+        return all.stream()
+                .filter(c -> (semester == null || semester.isEmpty() || semester.equals(c.getSemester())))
+                .filter(c -> (teacher == null || teacher.isEmpty() || teacher.equals(c.getTeacher())))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
     public void batchSave(List<Course> courses) {
         for (Course course : courses) {
             courseMapper.insert(course);

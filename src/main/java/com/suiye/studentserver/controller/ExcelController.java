@@ -36,44 +36,54 @@ public class ExcelController {
     private CourseService courseService;
 
     /**
-     * 导出学生数据为 Excel
+     * 导出学生数据为 Excel (支持筛选)
      */
     @GetMapping("/export/student")
-    public void exportStudentExcel(HttpServletResponse response) throws IOException {
+    public void exportStudentExcel(
+            @RequestParam(required = false) String major,
+            @RequestParam(required = false) String className,
+            HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         String fileName = URLEncoder.encode("学生档案数据", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
 
-        List<Student> list = studentService.getAllStudents();
+        List<Student> list = studentService.getFilteredStudents(major, className);
         EasyExcel.write(response.getOutputStream(), Student.class).sheet("学生信息").doWrite(list);
     }
 
     /**
-     * 导出成绩数据为 Excel
+     * 导出成绩数据为 Excel (支持筛选)
      */
     @GetMapping("/export/score")
-    public void exportScoreExcel(HttpServletResponse response) throws IOException {
+    public void exportScoreExcel(
+            @RequestParam(required = false) String studentNumber,
+            @RequestParam(required = false) String courseNumber,
+            @RequestParam(required = false) String major,
+            HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         String fileName = URLEncoder.encode("学生成绩数据", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
 
-        List<ScoreVO> list = scoreService.getAllScores();
+        List<ScoreVO> list = scoreService.getFilteredScores(studentNumber, courseNumber, major);
         EasyExcel.write(response.getOutputStream(), ScoreVO.class).sheet("成绩信息").doWrite(list);
     }
 
     /**
-     * 导出课程数据为 Excel
+     * 导出课程数据为 Excel (支持筛选)
      */
     @GetMapping("/export/course")
-    public void exportCourseExcel(HttpServletResponse response) throws IOException {
+    public void exportCourseExcel(
+            @RequestParam(required = false) String semester,
+            @RequestParam(required = false) String teacher,
+            HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         String fileName = URLEncoder.encode("课程信息数据", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
 
-        List<Course> list = courseService.getAllCourses();
+        List<Course> list = courseService.getFilteredCourses(semester, teacher);
         EasyExcel.write(response.getOutputStream(), Course.class).sheet("课程信息").doWrite(list);
     }
 

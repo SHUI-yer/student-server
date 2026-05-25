@@ -9,5 +9,6 @@ public interface ScoreService {
     int saveScore(Score score);
     int deleteScore(Integer id);
     java.util.List<com.suiye.studentserver.entity.ScoreVO> getAllScores();
+    java.util.List<com.suiye.studentserver.entity.ScoreVO> getFilteredScores(String studentNumber, String courseNumber, String major);
     void batchImport(java.util.List<com.suiye.studentserver.entity.ScoreImportDTO> scores);
 }

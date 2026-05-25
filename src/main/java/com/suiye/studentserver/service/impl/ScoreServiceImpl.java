@@ -78,6 +78,16 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    public List<ScoreVO> getFilteredScores(String studentNumber, String courseNumber, String major) {
+        List<ScoreVO> all = scoreMapper.findAll();
+        return all.stream()
+                .filter(s -> (studentNumber == null || studentNumber.isEmpty() || studentNumber.equals(s.getStudentNumber())))
+                .filter(s -> (courseNumber == null || courseNumber.isEmpty() || courseNumber.equals(s.getCourseNumber())))
+                .filter(s -> (major == null || major.isEmpty() || major.equals(s.getMajor())))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public void batchImport(List<ScoreImportDTO> scores) {
         for (ScoreImportDTO dto : scores) {

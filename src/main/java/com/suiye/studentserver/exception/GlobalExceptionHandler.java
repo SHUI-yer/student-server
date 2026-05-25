@@ -2,12 +2,30 @@ package com.suiye.studentserver.exception;
 
 import com.suiye.studentserver.common.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * 处理参数校验异常 (Hibernate Validator)
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result<Void> handleValidationException(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        String message = bindingResult.getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        log.warn("参数校验失败: {}", message);
+        return Result.error(message);
+    }
 
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e) {

@@ -4,6 +4,7 @@ import com.suiye.studentserver.common.Result;
 import com.suiye.studentserver.entity.Score;
 import com.suiye.studentserver.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class ScoreController {
     }
 
     @PostMapping("/save")
-    public Result<String> saveScore(@RequestBody Score score) {
+    public Result<String> saveScore(@RequestBody @Validated Score score) {
         scoreService.saveScore(score);
         return Result.success("保存成功");
     }

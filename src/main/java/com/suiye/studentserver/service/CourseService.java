@@ -8,5 +8,6 @@ public interface CourseService {
     int saveCourse(Course course);
     int deleteCourse(Integer id);
     java.util.List<Course> getAllCourses();
+    java.util.List<Course> getFilteredCourses(String semester, String teacher);
     void batchSave(java.util.List<Course> courses);
 }

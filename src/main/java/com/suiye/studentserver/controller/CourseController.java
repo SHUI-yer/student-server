@@ -4,6 +4,7 @@ import com.suiye.studentserver.common.Result;
 import com.suiye.studentserver.entity.Course;
 import com.suiye.studentserver.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ public class CourseController {
     }
 
     @PostMapping("/save")
-    public Result<Void> save(@RequestBody Course course) {
+    public Result<Void> save(@RequestBody @Validated Course course) {
         courseService.saveCourse(course);
         return Result.success();
     }

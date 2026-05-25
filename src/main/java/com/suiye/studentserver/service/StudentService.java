@@ -9,6 +9,7 @@ public interface StudentService {
     int saveStudent(Student student);
     int deleteStudent(Integer id);
     List<Student> getAllStudents();
+    List<Student> getFilteredStudents(String major, String className);
     Student getStudentById(Integer id);
     void batchSave(List<Student> students);
 }
