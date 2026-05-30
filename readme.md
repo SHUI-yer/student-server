@@ -20,24 +20,84 @@
 | 软件 | 版本 | 用途 |
 |------|------|------|
 | Java JDK | 17+ | 运行后端 |
-| MySQL | 8.0+ | 数据库 |
-| Node.js | 18+ | 运行前端（可选） |
+| MySQL | 8.0+ | 数据库（或使用 H2 内存数据库） |
+| Node.js | 18+ | 构建前端 |
 
 ### 一键环境检查（推荐）
 
 运行环境检查脚本，自动检测并安装缺失的依赖：
 
 ```powershell
-# Right-click PowerShell and run as Administrator
+# 右键 PowerShell 以管理员身份运行
 .\setup-environment.ps1
 ```
 
-The script will:
-- Check if Java JDK 17+, MySQL 8.0+, Node.js 18+ are installed
-- Automatically download and install missing software using Chinese mirrors
-- Configure npm to use Chinese mirror for faster downloads
+脚本会自动：
+- 检测 Java JDK 17+、MySQL 8.0+、Node.js 18+ 是否已安装
+- 使用国内镜像自动下载安装缺失的软件
+- 配置 npm 使用国内镜像加速下载
 
-### 一键部署步骤
+---
+
+## 方式一：一键打包脚本（推荐）
+
+最简单的部署方式，使用构建脚本一键打包前后端：
+
+### 目录结构要求
+
+```
+your-project/
+├── student-server/      # 后端仓库（本仓库）
+│   ├── build_all.bat    # 双击运行
+│   └── build_all.ps1
+└── student_client/      # 前端仓库（同级目录）
+```
+
+### 操作步骤
+
+```bash
+# 1. 克隆两个仓库到同一目录
+git clone https://github.com/SHUI-yer/student-server.git
+git clone https://github.com/SHUI-yer/student_client.git
+
+# 2. 进入后端目录，运行构建脚本
+cd student-server
+.\build_all.bat
+```
+
+### 构建产物
+
+脚本会在 `student-server/release/` 目录生成以下文件：
+
+| 文件 | 说明 |
+|------|------|
+| `app.jar` | 一体化应用（包含前端） |
+| `run_server.bat` | MySQL 模式启动脚本 |
+| `run_server_h2.bat` | H2 模式启动脚本（无需 MySQL） |
+| `start.bat` | 后台启动脚本 |
+| `stop.bat` | 停止服务脚本 |
+| `application-local.properties` | 数据库配置文件 |
+| `init_database.sql` | 数据库初始化脚本 |
+
+### 启动服务
+
+```bash
+# 方式 1：MySQL 模式（需要 MySQL）
+# 先编辑 application-local.properties 配置数据库密码
+# 然后导入数据库：mysql -u root -p < init_database.sql
+双击 run_server.bat
+
+# 方式 2：H2 模式（无需 MySQL，使用内存数据库）
+双击 run_server_h2.bat
+```
+
+启动后访问：**http://localhost:8080**
+
+---
+
+## 方式二：开发模式启动
+
+适合开发调试，前后端分离运行：
 
 ```bash
 # 1. Clone both repositories
@@ -225,15 +285,21 @@ java -jar target/student-server-0.0.1-SNAPSHOT.jar
 ### 方式三：一体化部署（包含前端）
 
 ```bash
-# 在项目根目录运行构建脚本
+# 前提：前端仓库已克隆到同级目录
+# ../student_client/
+
+# 在 student-server 目录运行构建脚本
 .\build_all.bat
 
 # 进入 release 目录
 cd release
 
-# 启动服务
+# 启动服务（MySQL 模式）
 java -jar app.jar
 # 或双击 run_server.bat
+
+# 启动服务（H2 模式，无需 MySQL）
+# 双击 run_server_h2.bat
 ```
 
 启动后访问：**http://localhost:8080**
