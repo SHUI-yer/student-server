@@ -1,7 +1,6 @@
 # Student Management System - Environment Setup Script
 # This script checks and installs required dependencies
-
-#Requires -RunAsAdministrator
+# Note: Run as Administrator for automatic installation
 
 param(
     [switch]$SkipMySQL,
@@ -34,8 +33,14 @@ function Test-Command {
 
 function Get-JavaVersion {
     try {
-        $version = java -version 2>&1 | Select-String "version" | ForEach-Object { $_.ToString().Split('"')[1] }
-        return $version
+        $javaOutput = cmd /c "java -version 2>&1" | Out-String
+        if ($javaOutput -match 'version\s+"(\d+\.\d+\.\d+)') {
+            return $Matches[1]
+        }
+        if ($javaOutput -match '"(\d+)') {
+            return $Matches[1]
+        }
+        return $null
     } catch {
         return $null
     }
@@ -51,8 +56,23 @@ function Get-NodeVersion {
 }
 
 function Get-MySQLVersion {
+    # Check common MySQL installation paths
+    $mysqlPaths = @(
+        "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe",
+        "C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe",
+        "C:\Program Files\MySQL\MySQL Server 9.0\bin\mysql.exe",
+        "C:\Program Files (x86)\MySQL\MySQL Server 8.0\bin\mysql.exe"
+    )
+    
+    foreach ($path in $mysqlPaths) {
+        if (Test-Path $path) {
+            $env:Path += ";$(Split-Path $path)"
+            break
+        }
+    }
+    
     try {
-        $version = mysql --version 2>$null
+        $version = & mysql --version 2>$null
         if ($version -match "Distrib (\d+\.\d+\.\d+)") {
             return $Matches[1]
         }
@@ -235,9 +255,33 @@ if (Test-Command "java") {
 if (-not $SkipMySQL) {
     Write-Host "Checking MySQL..." -ForegroundColor Yellow
     
-    if (Test-Command "mysql") {
+    # Try to find MySQL in common paths first
+    $mysqlPaths = @(
+        "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe",
+        "C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe",
+        "C:\Program Files\MySQL\MySQL Server 9.0\bin\mysql.exe",
+        "C:\Program Files (x86)\MySQL\MySQL Server 8.0\bin\mysql.exe"
+    )
+    
+    $mysqlFound = $false
+    foreach ($path in $mysqlPaths) {
+        if (Test-Path $path) {
+            $mysqlBin = Split-Path $path
+            if ($env:Path -notlike "*$mysqlBin*") {
+                $env:Path += ";$mysqlBin"
+            }
+            $mysqlFound = $true
+            break
+        }
+    }
+    
+    if ((Test-Command "mysql") -or $mysqlFound) {
         $mysqlVer = Get-MySQLVersion
-        Write-Status -Message "MySQL $mysqlVer found" -Status "OK" -Color "Green"
+        if ($mysqlVer) {
+            Write-Status -Message "MySQL $mysqlVer found" -Status "OK" -Color "Green"
+        } else {
+            Write-Status -Message "MySQL found" -Status "OK" -Color "Green"
+        }
     } else {
         Write-Status -Message "MySQL not found (required for deployment)" -Status "WARN" -Color "Yellow"
         $needsInstall += "MySQL"
