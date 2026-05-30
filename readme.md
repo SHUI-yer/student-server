@@ -74,6 +74,51 @@ npm run dev
 
 ---
 
+# 🧪 无需数据库测试（使用 H2 内存数据库）
+
+如果你没有安装 MySQL，可以使用 H2 内存数据库快速测试：
+
+### 启动方式
+
+```powershell
+# 使用 H2 内存数据库启动（无需 MySQL）
+cd student-server
+.\mvnw spring-boot:run -Dspring-boot.run.profiles=h2
+```
+
+### 测试数据
+
+H2 配置会自动初始化以下测试数据：
+
+| 类型 | 数量 | 说明 |
+|------|------|------|
+| 学生 | 8 人 | 计算机、软件工程、AI、数据科学专业 |
+| 课程 | 6 门 | Java、数据结构、数据库、操作系统等 |
+| 成绩 | 19 条 | 覆盖所有学生和课程 |
+
+### H2 控制台
+
+启动后可以访问 H2 控制台查看和管理数据：
+```
+http://localhost:8080/h2-console
+```
+
+连接配置：
+- JDBC URL: `jdbc:h2:mem:student_db`
+- User Name: `sa`
+- Password: （留空）
+
+### 数据库切换
+
+| 场景 | 启动命令 |
+|------|----------|
+| 使用 MySQL（默认） | `.\mvnw spring-boot:run` |
+| 使用 H2（无需数据库） | `.\mvnw spring-boot:run -Dspring-boot.run.profiles=h2` |
+
+> ⚠️ 注意：H2 是内存数据库，重启后数据会重置为初始状态
+
+---
+
 # 🚀 核心技术特性 (Technical Highlights)
 
 - **数字化分析引擎**: 通过 StatController 实时产出历年成绩趋势、及格率波动及基于**标准差 (SD)** 的课程难度评估模型。
