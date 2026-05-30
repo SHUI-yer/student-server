@@ -5,6 +5,61 @@
 
 ---
 
+# 🔗 相关仓库
+
+| 仓库 | 地址 | 说明 |
+|------|------|------|
+| **前端** | [student_client](https://github.com/SHUI-yer/student_client) | Vue 3 + TypeScript 前端项目 |
+| **后端** | [student-server](https://github.com/SHUI-yer/student-server) | Spring Boot 后端项目（本仓库） |
+
+---
+
+# 🚀 快速部署（给 Clone 用户）
+
+### 环境要求
+| 软件 | 版本 | 用途 |
+|------|------|------|
+| Java JDK | 17+ | 运行后端 |
+| MySQL | 8.0+ | 数据库 |
+| Node.js | 18+ | 运行前端（可选） |
+
+### 一键部署步骤
+
+```bash
+# 1. 克隆两个仓库
+git clone https://github.com/SHUI-yer/student-server.git
+git clone https://github.com/SHUI-yer/student_client.git
+
+# 2. 创建数据库
+mysql -u root -p -e "CREATE DATABASE student_systerm DEFAULT CHARACTER SET utf8mb4;"
+
+# 3. 导入数据
+mysql -u root -p student_systerm < student-server/init_database.sql
+
+# 4. 配置数据库密码
+# 编辑 student-server/src/main/resources/application-local.properties
+# 修改 spring.datasource.password=你的MySQL密码
+
+# 5. 启动后端（终端1）
+cd student-server
+./mvnw spring-boot:run
+
+# 6. 启动前端（终端2）
+cd student_client
+npm install
+npm run dev
+
+# 7. 访问系统
+# 打开浏览器 http://localhost:5173
+```
+
+### 默认登录账号
+| 用户名 | 密码 |
+|--------|------|
+| admin | 123456 |
+
+---
+
 # 🚀 核心技术特性 (Technical Highlights)
 
 - **数字化分析引擎**: 通过 StatController 实时产出历年成绩趋势、及格率波动及基于**标准差 (SD)** 的课程难度评估模型。
@@ -159,5 +214,4 @@ server.port=8080  # 修改为其他端口
 
 # 📚 相关文档
 - [数据库初始化脚本](init_database.sql)
-- [项目根目录 README](../readme.md)
-- [前端项目 README](../student_client/README.md)
+- [前端项目](https://github.com/SHUI-yer/student_client)
