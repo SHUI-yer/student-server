@@ -13,6 +13,7 @@
 - **严谨数据校验**: 集成 Hibernate Validator，在 Controller 层通过 `@Validated` 强制拦截非法参数（年龄限制 1-120，成绩限制 0-100）。
 - **全栈文件存储**: 支持头像图片的异步上传、UUID 随机重命名防冲突、以及静态资源放行映射。
 - **三位一体安全体系**: 基于 JWT 的请求拦截、全局 Result 封装、以及 RESTful 异常统一处理。
+- **前端静态资源托管**: 支持将 Vue 打包产物嵌入 jar，实现单文件部署。
 
 ---
 
@@ -21,7 +22,7 @@
 student-server/
 ├── src/main/java/com/suiye/studentserver/
 │   ├── common/             # 统一响应封装 (Result<T>)
-│   ├── config/             # JWT、CORS 及静态资源放行配置
+│   ├── config/             # JWT、CORS、静态资源及前端托管配置
 │   ├── controller/         # RESTful 接口 (含统计分析、Excel 接口)
 │   ├── entity/             # 实体类 (含 EasyExcel 注解与 Validation 约束)
 │   ├── exception/          # 全局异常拦截器
@@ -29,10 +30,12 @@ student-server/
 │   ├── mapper/             # MyBatis 接口与 SQL 映射
 │   └── service/            # 业务层 (含成绩折算算法、统计聚合逻辑)
 ├── src/main/resources/
-│   ├── application.properties
-│   └── application-local.properties # 本地机密配置 (数据库密码)
-├── init_database.sql       # 🏦 标准化数据库初始化脚本 (含最新原始分字段)
-└── uploads/                # 📁 头像文件持久化保险箱
+│   ├── application.properties        # 主配置文件
+│   ├── application-local.properties  # 本地配置 (数据库连接等)
+│   └── static/                       # 前端打包产物 (构建时自动生成)
+├── init_database.sql       # 🏦 标准化数据库初始化脚本
+├── uploads/                # 📁 头像文件持久化目录
+└── pom.xml                 # Maven 项目配置
 ```
 
 ---
@@ -47,23 +50,114 @@ student-server/
 
 ---
 
-# 🚀 极速启动指南
+# 🛠️ 环境准备
 
-### 1. 数据库准备
-1. 执行 `init_database.sql` 脚本，建立 `student`、`course`、`score` 和 `user` 表。
+### 系统要求
+| 环境 | 版本要求 | 说明 |
+|------|----------|------|
+| **Java JDK** | 17+ | 推荐 Zulu JDK 或 Oracle JDK |
+| **Maven** | 3.9+ | 或使用项目自带的 `mvnw` |
+| **MySQL** | 8.0+ | 需提前安装并启动服务 |
 
-### 2. 本地配置
-1. 在 `src/main/resources/` 下确保 `application-local.properties` 配置了正确的 MySQL 密码。
+### 数据库配置
 
-### 3. 编译运行
+1. **创建数据库**
+```sql
+CREATE DATABASE student_systerm DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+2. **导入初始化脚本**
 ```bash
-# Windows 环境
-mvnw.cmd clean spring-boot:run
+mysql -u root -p student_systerm < init_database.sql
+```
+
+3. **配置数据库连接**
+
+编辑 `src/main/resources/application-local.properties`：
+```properties
+# 数据库连接配置
+spring.datasource.url=jdbc:mysql://localhost:3306/student_systerm?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8
+spring.datasource.username=root
+spring.datasource.password=你的密码
+
+# 服务器端口
+server.port=8080
+
+# MyBatis 配置
+mybatis.configuration.map-underscore-to-camel-case=true
 ```
 
 ---
 
-## 💎 开发环境依赖
+# 🚀 启动方式
+
+### 方式一：IDE 启动（推荐开发时使用）
+
+1. 使用 IDEA 或 Eclipse 打开项目
+2. 等待 Maven 依赖下载完成
+3. 运行 `StudentServerApplication.java` 主类
+
+### 方式二：命令行启动
+
+```bash
+# Windows 环境
+mvnw.cmd clean spring-boot:run
+
+# 或者先打包再运行
+mvnw.cmd clean package -DskipTests
+java -jar target/student-server-0.0.1-SNAPSHOT.jar
+```
+
+### 方式三：一体化部署（包含前端）
+
+```bash
+# 在项目根目录运行构建脚本
+.\build_all.bat
+
+# 进入 release 目录
+cd release
+
+# 启动服务
+java -jar app.jar
+# 或双击 run_server.bat
+```
+
+启动后访问：**http://localhost:8080**
+
+---
+
+# 🔐 默认登录账号
+
+| 用户名 | 密码 |
+|--------|------|
+| admin | 123456 |
+
+---
+
+# 📝 配置说明
+
+### 端口修改
+在 `application-local.properties` 中修改：
+```properties
+server.port=8080  # 修改为其他端口
+```
+
+### 文件上传路径
+默认上传到项目运行目录下的 `uploads/` 文件夹，可在 `WebMvcConfig.java` 中修改。
+
+### JWT 密钥
+当前密钥硬编码在代码中（演示用途），生产环境建议改为环境变量。
+
+---
+
+# 💎 开发环境依赖
 - **Java SDK**: 17+ (推荐 Zulu JDK)
 - **Maven**: 3.9+
 - **MySQL**: 8.0+
+
+---
+
+# 📚 相关文档
+- [数据库初始化脚本](init_database.sql)
+- [项目根目录 README](../readme.md)
+- [前端项目 README](../student_client/README.md)

@@ -7,7 +7,6 @@ import com.suiye.studentserver.entity.Student;
 import com.suiye.studentserver.entity.Course;
 import com.suiye.studentserver.entity.ScoreImportDTO;
 import com.suiye.studentserver.entity.ScoreVO;
-import com.suiye.studentserver.entity.Student;
 import com.suiye.studentserver.service.CourseService;
 import com.suiye.studentserver.service.ScoreService;
 import com.suiye.studentserver.service.StudentService;

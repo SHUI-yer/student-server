@@ -27,15 +27,15 @@ public class GlobalExceptionHandler {
         return Result.error(message);
     }
 
-    @ExceptionHandler(Exception.class)
-    public Result<Void> handleException(Exception e) {
-        log.error("系统运行异常: ", e);
-        return Result.error("系统繁忙，请稍后再试");
-    }
-
     @ExceptionHandler(RuntimeException.class)
     public Result<Void> handleRuntimeException(RuntimeException e) {
         log.error("业务运行时异常: ", e);
         return Result.error(e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public Result<Void> handleException(Exception e) {
+        log.error("系统运行异常: ", e);
+        return Result.error("系统繁忙，请稍后再试");
     }
 }
