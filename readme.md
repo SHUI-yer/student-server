@@ -23,39 +23,53 @@
 | MySQL | 8.0+ | 数据库 |
 | Node.js | 18+ | 运行前端（可选） |
 
+### 一键环境检查（推荐）
+
+运行环境检查脚本，自动检测并安装缺失的依赖：
+
+```powershell
+# Right-click PowerShell and run as Administrator
+.\setup-environment.ps1
+```
+
+The script will:
+- Check if Java JDK 17+, MySQL 8.0+, Node.js 18+ are installed
+- Automatically download and install missing software using Chinese mirrors
+- Configure npm to use Chinese mirror for faster downloads
+
 ### 一键部署步骤
 
 ```bash
-# 1. 克隆两个仓库
+# 1. Clone both repositories
 git clone https://github.com/SHUI-yer/student-server.git
 git clone https://github.com/SHUI-yer/student_client.git
 
-# 2. 创建数据库
+# 2. Create database
 mysql -u root -p -e "CREATE DATABASE student_systerm DEFAULT CHARACTER SET utf8mb4;"
 
-# 3. 导入数据
+# 3. Import data
 mysql -u root -p student_systerm < student-server/init_database.sql
 
-# 4. 配置数据库密码
-# 编辑 student-server/src/main/resources/application-local.properties
-# 修改 spring.datasource.password=你的MySQL密码
+# 4. Configure database password
+# Edit student-server/src/main/resources/application-local.properties
+# Change spring.datasource.password=your_password
 
-# 5. 启动后端（终端1）
+# 5. Start backend (Terminal 1)
 cd student-server
 ./mvnw spring-boot:run
 
-# 6. 启动前端（终端2）
+# 6. Start frontend (Terminal 2)
 cd student_client
 npm install
 npm run dev
 
-# 7. 访问系统
-# 打开浏览器 http://localhost:5173
+# 7. Access the system
+# Open browser http://localhost:5173
 ```
 
-### 默认登录账号
-| 用户名 | 密码 |
-|--------|------|
+### Default Login
+| Username | Password |
+|----------|----------|
 | admin | 123456 |
 
 ---
